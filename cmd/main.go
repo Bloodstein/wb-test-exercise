@@ -2,7 +2,6 @@ package main
 
 import (
 	"context"
-	"os"
 
 	wbtestexercise "github.com/Bloodstein/wb-test-exercise"
 	"github.com/Bloodstein/wb-test-exercise/pkg/handler"
@@ -33,12 +32,9 @@ func main() {
 	}
 
 	dbconf := &repository.Config{
-		Database: viper.GetString("db.mongo.database"),
-		Login:    viper.GetString("db.mongo.login"),
-		Password: os.Getenv("MONGO_DB_PASSWORD"),
+		Host: viper.GetString("db.mongo.host"),
+		Port: viper.GetString("db.mongo.port"),
 	}
-
-	logrus.Printf("DB configuration: %d", dbconf)
 
 	db, err := repository.NewMongoDB(dbconf)
 

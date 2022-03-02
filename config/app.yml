@@ -1,6 +1,7 @@
 port: "8000"
 db:
   mongo:
-    database: "Cluster0"
+    host: "localhost"
+    port: "27017"
+    database: "WBTestExercise"
     collection: "Links"
-    login: "saomlydb"

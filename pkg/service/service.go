@@ -11,10 +11,10 @@ type Service struct {
 
 type Relations interface {
 	GetAll() ([]*domain.TelegramToOfficeRelation, error)
-	GetOne(int) (*domain.TelegramToOfficeRelation, error)
-	Create(row *domain.TelegramToOfficeRelation) (int, error)
-	Delete(int) (int, error)
-	Update(int, *domain.TelegramToOfficeRelation) (int, error)
+	GetOne(string) (*domain.TelegramToOfficeRelation, error)
+	Create(row *domain.ModifyRequest) (string, error)
+	Delete(string) (int, error)
+	Update(string, *domain.ModifyRequest) (int, error)
 }
 
 func NewService(repo *repository.Repository) *Service {

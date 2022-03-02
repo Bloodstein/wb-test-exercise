@@ -3,7 +3,6 @@ package handler
 import (
 	"errors"
 	"fmt"
-	"strconv"
 
 	"github.com/Bloodstein/wb-test-exercise/pkg/service"
 	"github.com/gin-gonic/gin"
@@ -27,11 +26,11 @@ func NewHandler(s *service.Service) *Handler {
 func (h *Handler) Routes() *gin.Engine {
 	router := gin.New()
 
-	router.Group("/api")
+	api := router.Group("/api")
 	{
-		router.Group("/v1")
+		v1 := api.Group("/v1")
 		{
-			rel := router.Group("/telegram-to-office-relations")
+			rel := v1.Group("/telegram-to-office-relations")
 			{
 				rel.GET("/items", h.GetAll)
 				rel.GET("/items/:id", h.GetOne)
@@ -45,18 +44,12 @@ func (h *Handler) Routes() *gin.Engine {
 	return router
 }
 
-func getRowId(ctx *gin.Context) (int, error) {
+func getRowId(ctx *gin.Context) (string, error) {
 	param := ctx.Param("id")
 
 	if len(param) == 0 {
-		return 0, errors.New(fmt.Sprintf("You've missed the required param \"ID\": %s", param))
+		return "", errors.New(fmt.Sprintf("You've missed the required param \"ID\": %s", param))
 	}
 
-	rowId, err := strconv.Atoi(param)
-
-	if err != nil {
-		return 0, errors.New(fmt.Sprintf("Fail to parse \"ID\": %s", param))
-	}
-
-	return rowId, nil
+	return param, nil
 }

@@ -11,10 +11,10 @@ type Repository struct {
 
 type RelationsRepository interface {
 	GetAll() ([]*domain.TelegramToOfficeRelation, error)
-	GetOne(int) (*domain.TelegramToOfficeRelation, error)
-	Create(*domain.TelegramToOfficeRelation) (int, error)
-	Update(int, *domain.TelegramToOfficeRelation) (int, error)
-	Delete(int) (int, error)
+	GetOne(string) (*domain.TelegramToOfficeRelation, error)
+	Create(*domain.ModifyRequest) (string, error)
+	Update(string, *domain.ModifyRequest) (int, error)
+	Delete(string) (int, error)
 }
 
 func NewRepository(db *mongo.Client) *Repository {

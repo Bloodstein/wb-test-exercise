@@ -13,6 +13,7 @@ func (h *Handler) GetAll(ctx *gin.Context) {
 
 	if err != nil {
 		errorResponse(ctx, http.StatusInternalServerError, err.Error())
+		return
 	}
 
 	ctx.JSON(http.StatusOK, map[string]interface{}{
@@ -33,6 +34,7 @@ func (h *Handler) GetOne(ctx *gin.Context) {
 
 	if err != nil {
 		errorResponse(ctx, http.StatusInternalServerError, err.Error())
+		return
 	}
 
 	ctx.JSON(http.StatusOK, map[string]interface{}{
@@ -42,26 +44,27 @@ func (h *Handler) GetOne(ctx *gin.Context) {
 }
 
 func (h *Handler) Create(ctx *gin.Context) {
-	var input domain.TelegramToOfficeRelation
+	var input domain.ModifyRequest
 
 	if err := ctx.BindJSON(&input); err != nil {
 		errorResponse(ctx, http.StatusBadRequest, "Request cannot be parsed")
 		return
 	}
 
-	newId, err := h.services.Relations.Create(&input)
+	newObjectId, err := h.services.Relations.Create(&input)
 
 	if err != nil {
 		errorResponse(ctx, http.StatusInternalServerError, err.Error())
+		return
 	}
 
 	ctx.JSON(http.StatusOK, map[string]interface{}{
 		"result": success_result,
 		"response": map[string]interface{}{
-			"id":     newId,
-			"get":    fmt.Sprintf("/api/v1/telegram-to-office-relations/items/%d", newId),
-			"update": fmt.Sprintf("/api/v1/telegram-to-office-relations/update/%d", newId),
-			"delete": fmt.Sprintf("/api/v1/telegram-to-office-relations/delete/%d", newId),
+			"id":     newObjectId,
+			"get":    fmt.Sprintf("/api/v1/telegram-to-office-relations/items/%s", newObjectId),
+			"update": fmt.Sprintf("/api/v1/telegram-to-office-relations/update/%s", newObjectId),
+			"delete": fmt.Sprintf("/api/v1/telegram-to-office-relations/delete/%s", newObjectId),
 		},
 	})
 }
@@ -78,6 +81,7 @@ func (h *Handler) Delete(ctx *gin.Context) {
 
 	if err != nil {
 		errorResponse(ctx, http.StatusInternalServerError, err.Error())
+		return
 	}
 
 	ctx.JSON(http.StatusOK, map[string]interface{}{
@@ -94,7 +98,7 @@ func (h *Handler) Update(ctx *gin.Context) {
 		return
 	}
 
-	var input domain.TelegramToOfficeRelation
+	var input domain.ModifyRequest
 
 	if err := ctx.BindJSON(&input); err != nil {
 		errorResponse(ctx, http.StatusBadRequest, "Request cannot be parsed")
@@ -105,6 +109,7 @@ func (h *Handler) Update(ctx *gin.Context) {
 
 	if err != nil {
 		errorResponse(ctx, http.StatusInternalServerError, err.Error())
+		return
 	}
 
 	ctx.JSON(http.StatusOK, map[string]interface{}{
