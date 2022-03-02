@@ -1,8 +1,17 @@
 package handler
 
 import (
+	"errors"
+	"fmt"
+	"strconv"
+
 	"github.com/Bloodstein/wb-test-exercise/pkg/service"
 	"github.com/gin-gonic/gin"
+)
+
+const (
+	success_result = "ok"
+	error_result   = "error"
 )
 
 type Handler struct {
@@ -16,20 +25,38 @@ func NewHandler(s *service.Service) *Handler {
 }
 
 func (h *Handler) Routes() *gin.Engine {
-
 	router := gin.New()
 
 	router.Group("/api")
 	{
-		ver1 := router.Group("/v1")
+		router.Group("/v1")
 		{
-			ver1.GET("/items", h.GetAll)
-			ver1.GET("/items/:id", h.GetOne)
-			ver1.POST("/create", h.Create)
-			ver1.POST("/delete", h.Delete)
-			ver1.POST("/update", h.Update)
+			rel := router.Group("/telegram-to-office-relations")
+			{
+				rel.GET("/items", h.GetAll)
+				rel.GET("/items/:id", h.GetOne)
+				rel.POST("/create/", h.Create)
+				rel.POST("/delete/:id", h.Delete)
+				rel.POST("/update/:id", h.Update)
+			}
 		}
 	}
 
 	return router
+}
+
+func getRowId(ctx *gin.Context) (int, error) {
+	param := ctx.Param("id")
+
+	if len(param) == 0 {
+		return 0, errors.New(fmt.Sprintf("You've missed the required param \"ID\": %s", param))
+	}
+
+	rowId, err := strconv.Atoi(param)
+
+	if err != nil {
+		return 0, errors.New(fmt.Sprintf("Fail to parse \"ID\": %s", param))
+	}
+
+	return rowId, nil
 }

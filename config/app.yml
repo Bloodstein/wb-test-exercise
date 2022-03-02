@@ -1,1 +1,6 @@
-port: 8080
+port: "8000"
+db:
+  mongo:
+    database: "Cluster0"
+    collection: "Links"
+    login: "saomlydb"

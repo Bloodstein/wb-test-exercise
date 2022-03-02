@@ -10,11 +10,11 @@ type Service struct {
 }
 
 type Relations interface {
-	GetAll() []*domain.TelegramToOfficeRelation
-	GetOne(rowId int) *domain.TelegramToOfficeRelation
-	Create(row *domain.TelegramToOfficeRelation) int
-	Delete(rowId int) int
-	Update(rowId int, payload *domain.TelegramToOfficeRelation) int
+	GetAll() ([]*domain.TelegramToOfficeRelation, error)
+	GetOne(int) (*domain.TelegramToOfficeRelation, error)
+	Create(row *domain.TelegramToOfficeRelation) (int, error)
+	Delete(int) (int, error)
+	Update(int, *domain.TelegramToOfficeRelation) (int, error)
 }
 
 func NewService(repo *repository.Repository) *Service {
