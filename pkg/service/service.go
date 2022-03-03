@@ -15,6 +15,8 @@ type Relations interface {
 	Create(row *domain.ModifyRequest) (string, error)
 	Delete(string) (int, error)
 	Update(string, *domain.ModifyRequest) (int, error)
+	OfficeAlreadyExists(int) bool
+	TelegramChatAlreadyExists(int) bool
 }
 
 func NewService(repo *repository.Repository) *Service {

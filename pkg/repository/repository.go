@@ -15,6 +15,8 @@ type RelationsRepository interface {
 	Create(*domain.ModifyRequest) (string, error)
 	Update(string, *domain.ModifyRequest) (int, error)
 	Delete(string) (int, error)
+	OfficeAlreadyExists(int) bool
+	TelegramChatAlreadyExists(int) bool
 }
 
 func NewRepository(db *mongo.Client) *Repository {

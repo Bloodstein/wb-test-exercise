@@ -5,14 +5,13 @@ import (
 	"fmt"
 
 	"github.com/Bloodstein/wb-test-exercise/domain"
-	"github.com/spf13/viper"
 	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/bson/primitive"
 	"go.mongodb.org/mongo-driver/mongo"
 	"go.mongodb.org/mongo-driver/mongo/options"
 )
 
-var ctx = context.TODO()
+var ctx = context.Background()
 
 type Config struct {
 	Host string
@@ -40,10 +39,7 @@ func NewMongoDbRepository(db *mongo.Client) *MongoDbRepository {
 	}
 }
 
-func (db *MongoDbRepository) collection() *mongo.Collection {
-	return db.repo.Database(viper.GetString("db.mongo.database")).Collection(viper.GetString("db.mongo.collection"))
-}
-
+// Получить все записи
 func (db *MongoDbRepository) GetAll() ([]*domain.TelegramToOfficeRelation, error) {
 	collection := db.collection()
 
@@ -51,7 +47,11 @@ func (db *MongoDbRepository) GetAll() ([]*domain.TelegramToOfficeRelation, error
 
 	cur, err := collection.Find(ctx, bson.D{{}})
 
-	if err != nil {
+	if cur.RemainingBatchLength() == 0 {
+		return rows, nil
+	}
+
+	if err != nil && err != mongo.ErrNoDocuments {
 		return rows, err
 	}
 
@@ -78,6 +78,7 @@ func (db *MongoDbRepository) GetAll() ([]*domain.TelegramToOfficeRelation, error
 	return rows, nil
 }
 
+// Получить одну конкретную запись по _id
 func (db *MongoDbRepository) GetOne(rowId string) (*domain.TelegramToOfficeRelation, error) {
 
 	objectId, err := primitive.ObjectIDFromHex(rowId)
@@ -99,6 +100,7 @@ func (db *MongoDbRepository) GetOne(rowId string) (*domain.TelegramToOfficeRelat
 	return &data, err
 }
 
+// Создать новую запись в БД
 func (db *MongoDbRepository) Create(input *domain.ModifyRequest) (string, error) {
 
 	result, err := db.collection().InsertOne(ctx, &input)
@@ -112,6 +114,7 @@ func (db *MongoDbRepository) Create(input *domain.ModifyRequest) (string, error)
 	return newId.Hex(), nil
 }
 
+// Изменить существующую запись по _id
 func (db *MongoDbRepository) Update(rowId string, input *domain.ModifyRequest) (int, error) {
 
 	objectId, _ := primitive.ObjectIDFromHex(rowId)
@@ -124,6 +127,7 @@ func (db *MongoDbRepository) Update(rowId string, input *domain.ModifyRequest) (
 	return int(result.ModifiedCount), nil
 }
 
+// Удалить существующую запись по _id
 func (db *MongoDbRepository) Delete(rowId string) (int, error) {
 
 	objectId, _ := primitive.ObjectIDFromHex(rowId)

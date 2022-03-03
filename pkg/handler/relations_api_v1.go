@@ -9,7 +9,7 @@ import (
 )
 
 func (h *Handler) GetAll(ctx *gin.Context) {
-	allItems, err := h.services.GetAll()
+	allItems, err := h.services.Relations.GetAll()
 
 	if err != nil {
 		errorResponse(ctx, http.StatusInternalServerError, err.Error())
@@ -30,7 +30,7 @@ func (h *Handler) GetOne(ctx *gin.Context) {
 		return
 	}
 
-	result, err := h.services.GetOne(searchId)
+	result, err := h.services.Relations.GetOne(searchId)
 
 	if err != nil {
 		errorResponse(ctx, http.StatusInternalServerError, err.Error())
@@ -77,7 +77,14 @@ func (h *Handler) Delete(ctx *gin.Context) {
 		return
 	}
 
-	result, err := h.services.Delete(searchId)
+	check, _ := h.services.Relations.GetOne(searchId)
+
+	if check == nil {
+		errorResponse(ctx, http.StatusInternalServerError, "That document doesn't exist")
+		return
+	}
+
+	result, err := h.services.Relations.Delete(searchId)
 
 	if err != nil {
 		errorResponse(ctx, http.StatusInternalServerError, err.Error())
@@ -105,7 +112,14 @@ func (h *Handler) Update(ctx *gin.Context) {
 		return
 	}
 
-	result, err := h.services.Update(searchId, &input)
+	check, _ := h.services.Relations.GetOne(searchId)
+
+	if check == nil {
+		errorResponse(ctx, http.StatusInternalServerError, "That document doesn't exist")
+		return
+	}
+
+	result, err := h.services.Relations.Update(searchId, &input)
 
 	if err != nil {
 		errorResponse(ctx, http.StatusInternalServerError, err.Error())

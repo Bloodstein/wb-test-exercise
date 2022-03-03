@@ -31,12 +31,10 @@ func main() {
 		logrus.Fatalf("The reading environment went wrong: %s", err)
 	}
 
-	dbconf := &repository.Config{
+	db, err := repository.NewMongoDB(&repository.Config{
 		Host: viper.GetString("db.mongo.host"),
 		Port: viper.GetString("db.mongo.port"),
-	}
-
-	db, err := repository.NewMongoDB(dbconf)
+	})
 
 	if err != nil {
 		logrus.Fatalf("Fail to connect to Mongo database: %s", err.Error())
