@@ -12,3 +12,11 @@
     - `collection` - имя коллекции;
 3. `docker build -t office-tg-manager:1.0 .`
 4. `docker run -d -p 80:8000 {IMAGE ID}`
+
+# Features
+1. GET `/api/{ver}/telegram-to-office-relations/items` - вернуть все записи
+2. GET `/api/{ver}/telegram-to-office-relations/items/{objectId}` - вернуть конкретную запись
+3. POST `/api/{ver}/telegram-to-office-relations/create` - создать новую запись
+4. POST `/api/{ver}/telegram-to-office-relations/update/{objectId}` - изменить существующую запись
+5. POST `/api/{ver}/telegram-to-office-relations/delete/{objectId}` - удалить существующую запись
+6. GET `/api/metrics` - метрика Prometheus
