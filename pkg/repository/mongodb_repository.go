@@ -25,10 +25,7 @@ type MongoDbRepository struct {
 func NewMongoDB(conf *Config) (*mongo.Client, error) {
 
 	connString := fmt.Sprintf("mongodb://%s:%s", conf.Host, conf.Port)
-
-	clientOptions := options.Client().ApplyURI(
-		connString,
-	)
+	clientOptions := options.Client().ApplyURI(connString)
 
 	return mongo.Connect(ctx, clientOptions)
 }
@@ -47,12 +44,8 @@ func (db *MongoDbRepository) GetAll() ([]*domain.TelegramToOfficeRelation, error
 
 	cur, err := collection.Find(ctx, bson.D{{}})
 
-	if cur.RemainingBatchLength() == 0 {
-		return rows, nil
-	}
-
 	if err != nil && err != mongo.ErrNoDocuments {
-		return rows, err
+		return rows, nil
 	}
 
 	for cur.Next(ctx) {

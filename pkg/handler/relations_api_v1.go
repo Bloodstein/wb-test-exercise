@@ -60,11 +60,11 @@ func (h *Handler) Create(ctx *gin.Context) {
 
 	ctx.JSON(http.StatusOK, map[string]interface{}{
 		"result": success_result,
-		"response": map[string]interface{}{
-			"id":     newObjectId,
+		"response": map[string]string{
 			"get":    fmt.Sprintf("/api/v1/telegram-to-office-relations/items/%s", newObjectId),
 			"update": fmt.Sprintf("/api/v1/telegram-to-office-relations/update/%s", newObjectId),
 			"delete": fmt.Sprintf("/api/v1/telegram-to-office-relations/delete/%s", newObjectId),
+			"id":     newObjectId,
 		},
 	})
 }

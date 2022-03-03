@@ -24,11 +24,11 @@ func main() {
 	logrus.SetFormatter(new(logrus.JSONFormatter))
 
 	if err := loadConfigs(); err != nil {
-		logrus.Fatalf("The reading configuration went wrong: %s", err)
+		logrus.Fatalf("The reading configuration went wrong: %s", err.Error())
 	}
 
 	if err := godotenv.Load(); err != nil {
-		logrus.Fatalf("The reading environment went wrong: %s", err)
+		logrus.Fatalf("The reading environment went wrong: %s", err.Error())
 	}
 
 	db, err := repository.NewMongoDB(&repository.Config{
@@ -44,14 +44,13 @@ func main() {
 
 	if err != nil {
 		logrus.Fatalf("Error to ping database: %s", err.Error())
-	} else {
-		logrus.Println("Ping OK!")
 	}
 
 	repo := repository.NewRepository(db)
 	service := service.NewService(repo)
 	h := handler.NewHandler(service)
 
-	server := wbtestexercise.NewServer()
-	server.Run(viper.GetString("port"), h.Routes())
+	if err := wbtestexercise.NewServer().Run(viper.GetString("port"), h.Routes()); err != nil {
+		logrus.Fatalf("Error to run web server: %s", err.Error())
+	}
 }
